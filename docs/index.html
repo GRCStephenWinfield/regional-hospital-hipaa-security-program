@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MercyBridge Health Network — HIPAA Security Program Dashboard</title>
+<style>
+:root{
+  --bg:#f4f6fa; --panel:#ffffff; --ink:#16202e; --muted:#5d6b7f; --line:#dde3ec;
+  --navy:#1f3864; --teal:#0f766e; --green:#15803d; --amber:#b45309; --red:#b91c1c;
+  --greenbg:#e8f6ec; --amberbg:#fdf3dc; --redbg:#fdeaea; --bluebg:#e9eff9;
+  --shadow:0 1px 2px rgba(16,32,64,.06),0 8px 24px rgba(16,32,64,.06);
+}
+html[data-theme="dark"]{
+  --bg:#0e1420; --panel:#151d2c; --ink:#e6ecf5; --muted:#9aa8bd; --line:#26324a;
+  --navy:#7ea2e0; --teal:#4fd1c5; --green:#4ade80; --amber:#fbbf24; --red:#f87171;
+  --greenbg:#12301e; --amberbg:#33270a; --redbg:#3a1414; --bluebg:#152239;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 20px 80px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:8px}
+h1{font-size:clamp(20px,2.6vw,30px);margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:14px;margin:0}
+.badgerow{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 26px}
+.badge{font-size:12px;font-weight:650;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel)}
+.b-green{background:var(--greenbg);color:var(--green);border-color:transparent}
+.b-amber{background:var(--amberbg);color:var(--amber);border-color:transparent}
+.b-red{background:var(--redbg);color:var(--red);border-color:transparent}
+.b-navy{background:var(--bluebg);color:var(--navy);border-color:transparent}
+button.toggle{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:999px;
+  padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:var(--shadow)}
+button.toggle:hover{border-color:var(--navy)}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:980px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}}
+@media(max-width:560px){.g4{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.kpi .n{font-size:30px;font-weight:750;letter-spacing:-.02em;line-height:1.1}
+.kpi .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:650;margin-top:6px}
+.kpi .d{font-size:12.5px;color:var(--muted);margin-top:7px}
+.kpi.ok .n{color:var(--green)} .kpi.warn .n{color:var(--amber)} .kpi.bad .n{color:var(--red)} .kpi.info .n{color:var(--navy)}
+h2{font-size:17px;margin:34px 0 12px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+h2::before{content:"";width:4px;height:17px;background:var(--navy);border-radius:2px;display:inline-block}
+h3{font-size:14px;margin:0 0 12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;background:var(--navy);color:#fff;padding:9px 11px;font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+html[data-theme="dark"] th{color:#0e1420}
+td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:rgba(127,145,180,.06)}
+tbody tr:hover{background:var(--bluebg)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.p-g{background:var(--greenbg);color:var(--green)} .p-a{background:var(--amberbg);color:var(--amber)}
+.p-r{background:var(--redbg);color:var(--red)} .p-n{background:var(--bluebg);color:var(--navy)}
+.bar{height:9px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:7px}
+.bar>i{display:block;height:100%;border-radius:5px}
+.callout{border-left:4px solid var(--red);background:var(--redbg);padding:14px 18px;border-radius:0 10px 10px 0;margin:16px 0}
+.callout.good{border-left-color:var(--green);background:var(--greenbg)}
+.callout.note{border-left-color:var(--navy);background:var(--bluebg)}
+.callout p{margin:0;font-size:14px}
+.callout strong{font-weight:750}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.lg{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.lg span{display:flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.phases{grid-template-columns:1fr}}
+a.ph{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:14px 16px;transition:.15s;box-shadow:var(--shadow)}
+a.ph:hover{border-color:var(--navy);transform:translateY(-2px)}
+a.ph .num{font-size:11px;font-weight:750;color:var(--navy);letter-spacing:.08em}
+a.ph .ttl{font-weight:680;font-size:14.5px;margin:3px 0 5px}
+a.ph .out{font-size:12.5px;color:var(--muted)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.small{font-size:12.5px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <h1>MercyBridge Health Network — HIPAA Security Program</h1>
+    <p class="sub">Executive dashboard · program period 2026-02-02 → 2026-12-31 · covered entity under HHS OCR · <em>illustrative portfolio sample, all figures fictional</em></p>
+  </div>
+  <button class="toggle" id="tt">🌙 Dark mode</button>
+</header>
+
+<div class="badgerow">
+  <span class="badge b-green">HITRUST i1 CERTIFIED · 93.1%</span>
+  <span class="badge b-green">Internal audit SATISFACTORY</span>
+  <span class="badge b-green">0 reportable breaches</span>
+  <span class="badge b-amber">Maturity 3.09 / 5</span>
+  <span class="badge b-red">Enterprise restoration NOT PROVEN</span>
+  <span class="badge b-navy">2 risks RAISED on evidence</span>
+</div>
+
+<div class="callout">
+  <p><strong>The honest headline.</strong> MercyBridge cannot yet demonstrate that it can restore its Tier&nbsp;1 clinical systems at enterprise scale. Validated restoration stands at <strong>7 of 12</strong> systems, the joint test with the EHR vendor is <strong>overdue</strong>, and the risk attached to it was <strong>raised from 8 to 10</strong> rather than quietly left in place. It is the one overdue item in the tracker and it is Board-visible by rule.</p>
+</div>
+
+<h2>Program at a glance</h2>
+<div class="grid g4">
+  <div class="card kpi ok"><div class="n">0</div><div class="l">High risks</div><div class="d">From 11 at baseline · third consecutive phase at zero</div></div>
+  <div class="card kpi info"><div class="n">2.1M</div><div class="l">Patient records</div><div class="d">68 of 210 systems handle ePHI · 6,120 medical devices</div></div>
+  <div class="card kpi ok"><div class="n">16 / 16</div><div class="l">Pen test findings retested</div><div class="d">0 closed on management assertion · 0 ePHI extracted</div></div>
+  <div class="card kpi ok"><div class="n">93.1%</div><div class="l">HITRUST i1 score</div><div class="d">174 of 182 at threshold · 0 Non-Compliant · 8 CAPs</div></div>
+  <div class="card kpi warn"><div class="n">3.09</div><div class="l">Maturity of 5</div><div class="d">From 1.61 · 23 domains · none at Level 5, by decision</div></div>
+  <div class="card kpi bad"><div class="n">7 / 12</div><div class="l">Tier 1 restoration validated</div><div class="d">Flat all year · CAP-01 scored 25%, the lowest in the assessment</div></div>
+  <div class="card kpi ok"><div class="n">0</div><div class="l">Reportable breaches</div><div class="d">3 incidents · 3,961 individuals assessed under §164.402(2)</div></div>
+  <div class="card kpi warn"><div class="n">23</div><div class="l">Open items at handover</div><div class="d">Each with a named owner and a date · 1 overdue</div></div>
+</div>
+
+<h2>Risk register — 56 risks across nine phases</h2>
+<div class="card">
+  <h3>Trajectory · High · Moderate · Low</h3>
+  <svg viewBox="0 0 940 330" role="img" aria-label="Risk trajectory across phases 3 to 9">
+    <g stroke="var(--line)" stroke-width="1">
+      <line x1="70" y1="47" x2="920" y2="47"/><line x1="70" y1="100" x2="920" y2="100"/>
+      <line x1="70" y1="153" x2="920" y2="153"/><line x1="70" y1="207" x2="920" y2="207"/>
+      <line x1="70" y1="260" x2="920" y2="260"/>
+    </g>
+    <g fill="var(--muted)" font-size="11" text-anchor="end">
+      <text x="60" y="51">40</text><text x="60" y="104">30</text><text x="60" y="157">20</text>
+      <text x="60" y="211">10</text><text x="60" y="264">0</text>
+    </g>
+    <g fill="var(--muted)" font-size="11.5" text-anchor="middle">
+      <text x="105" y="284">P03</text><text x="240" y="284">P04</text><text x="375" y="284">P05</text>
+      <text x="510" y="284">P06</text><text x="645" y="284">P07</text><text x="780" y="284">P08</text><text x="915" y="284">P09</text>
+    </g>
+    <g fill="var(--muted)" font-size="10.5" text-anchor="middle">
+      <text x="105" y="300">2026-04</text><text x="375" y="300">2026-07</text><text x="645" y="300">2026-08</text><text x="915" y="300">2026-12</text>
+    </g>
+    <!-- Low: 18,20,35,36,40,40,40 -->
+    <polyline fill="none" stroke="#15803d" stroke-width="2.6" stroke-linejoin="round"
+      points="105,166 240,155 375,73 510,68 645,46 780,46 915,46"/>
+    <!-- Moderate: 27,27,20,20,16,16,16 -->
+    <polyline fill="none" stroke="#b45309" stroke-width="2.6" stroke-linejoin="round"
+      points="105,117 240,117 375,155 510,155 645,177 780,177 915,177"/>
+    <!-- High: 11,9,1,0,0,0,0 -->
+    <polyline fill="none" stroke="#b91c1c" stroke-width="2.6" stroke-linejoin="round"
+      points="105,200 240,211 375,255 510,260 645,260 780,260 915,260"/>
+    <g fill="#b91c1c" font-size="11" font-weight="700">
+      <circle cx="105" cy="200" r="3.6"/><text x="105" y="192" text-anchor="middle">11 High</text>
+      <circle cx="510" cy="260" r="3.6"/><text x="510" y="252" text-anchor="middle">0</text>
+    </g>
+    <g fill="#15803d" font-size="11" font-weight="700"><circle cx="915" cy="46" r="3.6"/><text x="895" y="40" text-anchor="end">40 Low</text></g>
+    <g fill="#b45309" font-size="11" font-weight="700"><circle cx="915" cy="177" r="3.6"/><text x="895" y="171" text-anchor="end">16 Moderate</text></g>
+  </svg>
+  <div class="lg">
+    <span><i class="sw" style="background:#b91c1c"></i> High</span>
+    <span><i class="sw" style="background:#b45309"></i> Moderate</span>
+    <span><i class="sw" style="background:#15803d"></i> Low</span>
+  </div>
+  <p class="small">The register fell hard in Phase 05, where technology closed risk, and has been flat since Phase 07. <strong>Flatness is the correct result</strong> — Phases 08 and 09 tested and reported; they did not build. A register that kept falling through a validation phase would mean the validation was not validating anything.</p>
+</div>
+
+<h2>The two risks that went up</h2>
+<div class="card">
+  <table>
+    <thead><tr><th style="width:150px">Risk</th><th style="width:120px">Movement</th><th>Why</th><th style="width:190px">Returns when</th></tr></thead>
+    <tbody>
+      <tr><td><strong>R-23</strong><br/>Enterprise ransomware</td><td><span class="pill p-r">8 → 10 RAISED</span></td>
+        <td>The Phase 07 reduction was written as <em>conditional</em> on a joint restoration test with the EHR vendor in 2026-09. The test did not fail — <strong>it did not happen</strong>. The condition lapsed exactly as drafted.</td>
+        <td>M-2 completes by 2027-02-28 and CAP-01 closes by 2027-03-31 — on demonstrated recoverability, not on a new date</td></tr>
+      <tr><td><strong>R-41</strong><br/>Unaccounted ePHI</td><td><span class="pill p-r">Low → Moderate</span></td>
+        <td>PT-03 found an internet-facing appointment application, live since 2018 and superseded in 2023, holding <strong>6,880 records</strong> — in no inventory, no owner, no logging, no patching path. The Low score rested on a belief that discovery scanning had bounded the sprawl.</td>
+        <td>Two consecutive clean quarterly reconciliations — 2027-03-31 and 2027-06-30</td></tr>
+      <tr><td>R-24<br/>Double-extortion exfiltration</td><td><span class="pill p-g">9 → 8 reduced</span></td>
+        <td>Detection against a live adversary measured up from 48% to 74% after detection engineering; impact held.</td><td>—</td></tr>
+      <tr><td>R-43<br/>Post-downtime integrity</td><td><span class="pill p-g">Moderate → Low</span></td>
+        <td>The surge model was re-based on a 10-day outage and <strong>Internal Audit verified the closure</strong> — correcting the assumption the Phase 07 tabletop had disproved.</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Both raises follow <strong>ADR-0021</strong>: where independent testing disproves an assumption, raise or restore the affected rating rather than only closing the finding. Register totals are identical entering and leaving Phase 08 — <strong>0 High · 16 Moderate · 40 Low</strong> — with different composition.</p>
+</div>
+
+<h2>Independent assessment — five lenses</h2>
+<div class="grid g3">
+  <div class="card"><h3>Penetration test</h3>
+    <p style="margin:0;font-size:13.5px"><strong>Ironwood Security Labs</strong> · 2026-09<br/>16 findings — 3 High, 7 Medium, 6 Low, <strong>0 Critical</strong>. All remediated, <strong>all independently re-tested</strong>. No ePHI extracted, Domain Administrator not obtained, no patient-connected device touched.</p>
+    <div class="bar"><i style="width:100%;background:var(--green)"></i></div></div>
+  <div class="card"><h3>Vulnerability assessment</h3>
+    <p style="margin:0;font-size:13.5px">KEV-listed instances <strong>148 → 0</strong> (100% closed). Total distinct instances down <strong>58.7%</strong>. Authenticated scan coverage 96.2%; 72 hosts structurally unassessable and tracked as CAP-06.</p>
+    <div class="bar"><i style="width:96%;background:var(--green)"></i></div></div>
+  <div class="card"><h3>Internal audit</h3>
+    <p style="margin:0;font-size:13.5px"><strong>IA-2026-14 — Satisfactory.</strong> Reports to the Audit &amp; Compliance Committee, not the CISO. 9 recommendations, <strong>0 Critical or High</strong>. Re-performed all three breach determinations and reached the same conclusion on each.</p>
+    <div class="bar"><i style="width:88%;background:var(--green)"></i></div></div>
+  <div class="card"><h3>HITRUST i1</h3>
+    <p style="margin:0;font-size:13.5px"><strong>Beacon Assurance</strong> · certified 2026-11-30, valid to 2027-11-29. <strong>93.1%</strong> across 182 requirement statements; 174 at threshold; 0 Non-Compliant; 8 CAPs. Lowest domain: BC/DR at <strong>79%</strong>.</p>
+    <div class="bar"><i style="width:93%;background:var(--green)"></i></div></div>
+  <div class="card"><h3>OCR audit readiness</h3>
+    <p style="margin:0;font-size:13.5px">91 protocol inquiries mapped — 78 fully evidenced, 10 with a dated gap, 3 not evidenced. <strong>0 new findings</strong>: every gap already had a tracked ID. Simulated data request produced 38 of 42 items, median <strong>1.5 business days</strong>.</p>
+    <div class="bar"><i style="width:86%;background:var(--amber)"></i></div></div>
+  <div class="card" style="border-color:var(--navy)"><h3>Where they converged</h3>
+    <p style="margin:0;font-size:13.5px"><strong>Three of five lenses</strong> landed on the same underlying defect working independently: <em>enterprise-scale recoverability is not proven.</em> The value of multiple lenses is in the overlap, and the overlap is the program's honest headline.</p>
+    <div class="bar"><i style="width:40%;background:var(--red)"></i></div></div>
+</div>
+
+<h2>Program maturity — 23 domains, nothing at Level 5</h2>
+<div class="card">
+  <table>
+    <thead><tr><th style="width:170px">Level</th><th style="width:90px">Domains</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pill p-n">5 — Optimizing</span></td><td><strong>0</strong></td><td><em>By decision (ADR-0022).</em> Level 5 requires the program's own measurement to catch a regression before an assessor or tester does. Encryption is the clearest case: 68 of 68, verified by two lenses — and <strong>PT-05 found the last legacy path, the metric did not.</strong></td></tr>
+      <tr><td><span class="pill p-g">4 — Managed</span></td><td><strong>7</strong></td><td>Governance · risk register · MFA · incident response · encryption &amp; key management · evaluation and independent assurance · evidence and retention</td></tr>
+      <tr><td><span class="pill p-n">3 — Defined</span></td><td><strong>11</strong></td><td>Policy · workforce security · access management · training · workstation · media controls · technical access · transmission · integrity · business associates · vulnerability management</td></tr>
+      <tr><td><span class="pill p-a">2 — Implemented</span></td><td><strong>5</strong></td><td>Audit logging (65 of 68 forwarding) · contingency &amp; recovery (7 of 12 validated) · physical consistency across ambulatory sites · medical device &amp; IoMT · security metrics (the catalogue is one quarter old)</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Mean maturity moved <strong>1.61 → 3.09</strong> across the program. Four of the five Level 2 domains are the same underlying story — <em>scope not yet complete</em> — and the fifth is the measurement capability itself, which is the newest thing the program owns and is scored accordingly.</p>
+</div>
+
+<h2>Board scorecard — reds print first, always</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Measure</th><th style="width:100px">2026-Q2</th><th style="width:100px">2026-Q3</th><th style="width:110px">2026-Q4</th><th style="width:110px">Threshold</th><th style="width:150px">Direction</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pill p-r">RED</span> Tier 1 validated restoration</td><td>7 of 12</td><td>7 of 12</td><td><strong>7 of 12</strong></td><td>12 of 12</td><td><strong>Flat all year</strong></td></tr>
+      <tr><td><span class="pill p-r">RED</span> Overdue tracked items</td><td>0</td><td>0</td><td><strong>1 (M-2)</strong></td><td>0</td><td><strong>Worse</strong></td></tr>
+      <tr><td><span class="pill p-r">RED</span> Central audit-log coverage</td><td>62 of 68</td><td>62 of 68</td><td><strong>65 of 68</strong></td><td>68 of 68</td><td>Improving, not closed</td></tr>
+      <tr><td><span class="pill p-r">RED</span> BA population under monitoring</td><td>24 of ~180</td><td>41 of ~180</td><td><strong>62 of ~180</strong></td><td>≥90%</td><td>Improving, far from target</td></tr>
+      <tr><td><span class="pill p-a">AMBER</span> Adversary detection rate</td><td>Not measured</td><td><strong>48%</strong></td><td><strong>74%</strong></td><td>≥85%</td><td>Improving</td></tr>
+      <tr><td><span class="pill p-a">AMBER</span> Detect → escalate median</td><td>Not measured</td><td>47 min</td><td><strong>41 min</strong></td><td>≤30 min</td><td>Improving</td></tr>
+      <tr><td><span class="pill p-a">AMBER</span> Residuals outside appetite</td><td>4</td><td>3</td><td><strong>3</strong></td><td>0</td><td>Flat; under dated acceptance</td></tr>
+      <tr><td><span class="pill p-g">GREEN</span> Open KEV instances</td><td>37</td><td>11</td><td><strong>0</strong></td><td>0</td><td>Closed</td></tr>
+      <tr><td><span class="pill p-g">GREEN</span> MFA / encryption at rest / in transit</td><td>68/68/68</td><td>68/68/68</td><td><strong>68/68/68</strong></td><td>68 of 68</td><td>Held</td></tr>
+      <tr><td><span class="pill p-g">GREEN</span> Reportable breaches</td><td>0</td><td>0</td><td><strong>0</strong></td><td>0</td><td>Held</td></tr>
+      <tr><td><span class="pill p-g">GREEN</span> Evidence production median</td><td>Not measured</td><td>2.4 days</td><td><strong>1.5 days</strong></td><td>≤2 days</td><td>Improving</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Twelve-measure board scorecard drawn from a <strong>36-metric catalogue</strong> (22 KPI, 14 KRI — 17 green, 10 amber, 9 red). Reds print first in every pack under <strong>ADR-0025</strong>: a standing format, not a gesture in a good year. Every metric carries a <strong>gaming-resistance analysis</strong>; a metric without one is not admitted to the catalogue.</p>
+</div>
+
+<h2>What this program does not claim</h2>
+<div class="grid g2">
+  <div class="card"><h3>Claimed</h3>
+    <ul style="margin:0;padding-left:18px;font-size:13.5px">
+      <li>Independently tested — 16 findings, every fix re-tested by the people who found it</li>
+      <li>Independently audited — Satisfactory opinion from an auditor reporting to the Board</li>
+      <li>Externally certified — HITRUST i1 at 93.1%, quality-reviewed by HITRUST</li>
+      <li>Regulator-ready — 8,412 evidence artefacts, median production 1.5 business days</li>
+    </ul></div>
+  <div class="card" style="border-color:var(--red)"><h3>Not claimed</h3>
+    <ul style="margin:0;padding-left:18px;font-size:13.5px">
+      <li><strong>HIPAA compliance.</strong> OCR neither endorses nor recognises any certification as a compliance determination</li>
+      <li><strong>Enterprise-scale recoverability.</strong> The test that would prove it did not happen</li>
+      <li><strong>Durability.</strong> Every remediation is under three months old; time is the only test</li>
+      <li><strong>That it was only good.</strong> Three low-severity incidents in eleven months is also a favourable draw</li>
+    </ul></div>
+</div>
+
+<h2>2027 obligations already on the calendar</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Obligation</th><th style="width:140px">Date</th><th style="width:150px">Owner</th></tr></thead>
+    <tbody>
+      <tr><td>SIEM onboarding for the final 3 of 68 ePHI systems (CAP-03)</td><td>2027-01-31</td><td>Marcus Reed</td></tr>
+      <tr><td><strong>Joint full-scale restoration test with the EHR vendor (M-2)</strong> <span class="pill p-r">OVERDUE</span></td><td><strong>2027-02-28</strong></td><td>Anthony Ruiz</td></tr>
+      <tr><td>Validated 24-hour restoration for the remaining 5 of 12 Tier 1 systems (CAP-01)</td><td>2027-03-31</td><td>Anthony Ruiz</td></tr>
+      <tr><td>Annual risk re-analysis under 03.10</td><td>2027-03-31</td><td>Michelle Tran</td></tr>
+      <tr><td>Business associate monitoring below the critical tier (CAP-02)</td><td>2027-04-30</td><td>Lisa Coleman</td></tr>
+      <tr><td>HITRUST rapid recertification evidence freeze</td><td>2027-07-15</td><td>Daniel Cho</td></tr>
+      <tr><td><strong>HITRUST i1 certificate expires</strong></td><td><strong>2027-11-29</strong></td><td>Daniel Cho</td></tr>
+    </tbody>
+  </table>
+  <p class="small"><strong>No second re-baseline of M-2 is authorised.</strong> A further slip goes to the Audit &amp; Compliance Committee Chair with a recovery plan, not a new date (ADR-0023).</p>
+</div>
+
+<h2>The nine phases</h2>
+<div class="phases">
+  <a class="ph" href="../01-program-foundation-hipaa-scoping/01.00-README.md"><div class="num">PHASE 01</div><div class="ttl">Program Foundation &amp; HIPAA Scoping</div><div class="out">Covered-entity status · Security Official designation · charter · RACI</div></a>
+  <a class="ph" href="../02-ephi-asset-inventory-data-flows/02.00-README.md"><div class="num">PHASE 02</div><div class="ttl">ePHI Asset Inventory &amp; Data Flows</div><div class="out">210 systems assessed · 68 in ePHI scope · 6,120 medical devices</div></a>
+  <a class="ph" href="../03-hipaa-security-risk-analysis/03.00-README.md"><div class="num">PHASE 03</div><div class="ttl">HIPAA Security Risk Analysis</div><div class="out">56 risks — 11 High · 27 Moderate · 18 Low</div></a>
+  <a class="ph" href="../04-administrative-safeguards/04.00-README.md"><div class="num">PHASE 04</div><div class="ttl">Administrative Safeguards</div><div class="out">§164.308 — 9 standards, 21 implementation specs · 24-policy suite</div></a>
+  <a class="ph" href="../05-physical-technical-safeguards/05.00-README.md"><div class="num">PHASE 05</div><div class="ttl">Physical &amp; Technical Safeguards</div><div class="out">MFA and encryption to 68 of 68 · six High risks closed</div></a>
+  <a class="ph" href="../06-business-associate-third-party-risk/06.00-README.md"><div class="num">PHASE 06</div><div class="ttl">Business Associate &amp; Third-Party Risk</div><div class="out">~180 associates · 24 critical · the last High risk closed</div></a>
+  <a class="ph" href="../07-incident-response-breach-notification/07.00-README.md"><div class="num">PHASE 07</div><div class="ttl">Incident Response &amp; Breach Notification</div><div class="out">3 incidents · 3,961 assessed · 0 reportable breaches</div></a>
+  <a class="ph" href="../08-hitrust-independent-assessment-audit-readiness/08.00-README.md"><div class="num">PHASE 08</div><div class="ttl">HITRUST &amp; Independent Assessment</div><div class="out">i1 certified 93.1% · two risks raised on evidence</div></a>
+  <a class="ph" href="../09-executive-reporting-program-maturity/09.00-README.md"><div class="num">PHASE 09</div><div class="ttl">Executive Reporting &amp; Program Maturity</div><div class="out">Maturity 3.09/5 · 23 open items handed to named owners</div></a>
+</div>
+
+<div class="callout note" style="margin-top:24px">
+  <p><strong>Full document index.</strong> Every document across all nine phases, plus a HIPAA Security Rule citation index mapping each standard and implementation specification to the document that addresses it, is in <a href="../09-executive-reporting-program-maturity/09.12-portfolio-index-and-navigation.md">09.12 — Portfolio Index &amp; Navigation</a>. The GitHub-native version of this dashboard is <a href="DASHBOARD.md">DASHBOARD.md</a>.</p>
+</div>
+
+<footer>
+  <strong>Illustrative portfolio sample.</strong> MercyBridge Health Network is fictitious. All names, systems, findings, assessment results, certifications and figures are invented for a professional portfolio demonstration of healthcare GRC capability. "Confidential — Electronic Protected Health Information (ePHI)" formatting is used for realism only — no real patient data appears anywhere in this repository. No certification referenced here constitutes a determination of HIPAA compliance by OCR or any other regulator.
+</footer>
+
+</div>
+<script>
+(function(){
+  var b=document.getElementById('tt'), r=document.documentElement;
+  b.addEventListener('click',function(){
+    var d = r.getAttribute('data-theme')==='dark';
+    r.setAttribute('data-theme', d?'light':'dark');
+    b.textContent = d ? '🌙 Dark mode' : '☀️ Light mode';
+  });
+})();
+</script>
+</body>
+</html>
